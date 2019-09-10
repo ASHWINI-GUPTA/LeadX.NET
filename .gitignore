@@ -378,3 +378,5 @@ MigrationBackup/
 
 # Dev Container
 .devcontainer
+
+Example/

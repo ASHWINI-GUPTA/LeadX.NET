@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using LeadX.NET.Exceptions;
 using LeadX.NET.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -45,6 +47,11 @@ namespace LeadX.NET
             var requestMessage = PrepareRequest(leadXResourceUri, method, payload);
             var response = await _httpClient.SendAsync(requestMessage, token);
 
+            // Check for Internal Server Error and throw LeadX Custom Exception
+            if (response.StatusCode == HttpStatusCode.InternalServerError)
+                throw new LeadXInternalServerException("LeadX Internal Server Error", _leadX.OrganizationId,
+                    _leadX.Version);
+
             return response.IsSuccessStatusCode ? response : ThrowLeadXException(response);
         }
 
@@ -54,6 +61,8 @@ namespace LeadX.NET
         /// <param name="response">Request message.</param>
         private static HttpResponseMessage ThrowLeadXException(HttpResponseMessage response)
         {
+            // Enhancement: Create a Package for LeadX Exception and Implement the Exceptions based on Status Code from LeadX API.
+
             throw new NotImplementedException();
         }
 

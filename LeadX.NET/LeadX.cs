@@ -1,5 +1,6 @@
 ﻿using System;
 using LeadX.NET.Entities;
+using LeadX.NET.Enum;
 using LeadX.NET.Interfaces;
 using LeadX.NET.Services;
 
@@ -27,26 +28,27 @@ namespace LeadX.NET
         public string VendorId { get; set; }
 
         /// <summary>
-        /// Gets or sets the API version id.
+        /// Gets or sets the API version to interact with.
         /// </summary>
-        public int Version { get; set; }
+        public string Version { get; set; }
 
         private LeadX(LeadXCredential credential)
         {
             OrganizationId = default;
             VendorId = default;
             Credential = credential;
-            Version = 1;
+            Version = "1.0";
             Services = new ServiceLocator();
             ConfigureDefaultServices(Services);
         }
 
         private void ConfigureDefaultServices(ServiceLocator services)
         {
+            services.Register<IRestClient>(() => new RestClient(this));
             services.Register<IAuthorizationService>(() => new AuthorizationService(this));
             services.Register<IUserService>(() => new UserService(this));
             services.Register<IOrganizationService>(() => new OrganizationService(this));
-            services.Register<IRestClient>(() => new RestClient(this));
+            services.Register<ILeadService>(() => new LeadService(this));
         }
 
         public static LeadX Client(LeadXCredential credential)
@@ -62,7 +64,7 @@ namespace LeadX.NET
 
         /// <summary>
         /// Get an object to interact with Users resource of LeadX.
-        /// MANAGE_USER permission is required to access this resource.
+        /// <see cref="Permission.MANAGE_USER"/> is required to access this resource.
         /// </summary>
         public IUserService Users => Services.Get<IUserService>();
 
@@ -76,5 +78,11 @@ namespace LeadX.NET
         /// User must have access to the requested organization.
         /// </summary>
         public IOrganizationService Organization => Services.Get<IOrganizationService>();
+        
+        /// <summary>
+        /// Get an object to interact with Lead resource of LeadX for an Organization.
+        /// Leads related permission is required to interact with this resource.
+        /// </summary>
+        public ILeadService Lead => Services.Get<ILeadService>();
     }
 }

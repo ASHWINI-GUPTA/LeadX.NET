@@ -2,12 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="Enum\" />
-    <Folder Include="Exceptions\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
