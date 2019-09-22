@@ -17,7 +17,7 @@ namespace LeadX.NET.Services
 
         public async Task<User> MeAsync()
         {
-            var resourceUri = $"/v{_leadX.Version}/organizations/{_leadX.Organization.OrganizationMacro}/me";
+            var resourceUri = $"/v{_leadX.Version}/me";
             return await _leadX.RestClient.ExecuteRequestAsync<User>(HttpMethod.Get, resourceUri);
         }
 

@@ -17,15 +17,9 @@ namespace LeadX.NET
 
         private ServiceLocator Services { get; }
 
-        /// <summary>
-        /// Gets or sets an LeadX Organization Id.
-        /// </summary>
-        public int OrganizationId { get; set; }
-
-        /// <summary>
-        /// Gets or sets the Vendor Id for an <see cref="OrganizationId"/>.
-        /// </summary>
-        public string VendorId { get; set; }
+        private int _organizationId;
+        
+        private string _vendorId;
 
         /// <summary>
         /// Gets or sets the API version to interact with.
@@ -34,8 +28,6 @@ namespace LeadX.NET
 
         private LeadX(LeadXCredential credential)
         {
-            OrganizationId = default;
-            VendorId = default;
             Credential = credential;
             Version = "1.0";
             Services = new ServiceLocator();
@@ -51,11 +43,34 @@ namespace LeadX.NET
             services.Register<ILeadService>(() => new LeadService(this));
         }
 
+        /// <summary>
+        /// Gets or sets an LeadX Organization Id.
+        /// </summary>
+        public int OrganizationId
+        {
+            get =>
+                _organizationId != default
+                    ? _organizationId
+                    : throw new ArgumentException("Organization Id must be provided.", nameof(OrganizationId));
+            set => _organizationId = value;
+        }
+
+        /// <summary>
+        /// Gets or sets the Vendor Id/Key for an <see cref="OrganizationId"/>.
+        /// </summary>
+        public string VendorId
+        {
+            get =>
+                string.IsNullOrWhiteSpace(_vendorId)
+                    ? throw new ArgumentException("Vendor Id must be provided.", nameof(OrganizationId))
+                    : _vendorId;
+            set => _vendorId = value;
+        }
+
         public static LeadX Client(LeadXCredential credential)
         {
             return new LeadX(credential);
         }
-
 
         /// <summary>
         /// Get an object to make a request to LeadX.

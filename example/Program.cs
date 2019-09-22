@@ -10,13 +10,16 @@ namespace Example
         {
             Console.WriteLine("Application Started...!!!");
 
-            var cred = new LeadXCredential("Your LeadX Access Token");
+            var cred = new LeadXCredential("YOUR ACCESS TOKEN");
 
             var leadX = LeadX.NET.LeadX.Client(cred);
             leadX.Version = "1.0";
+            leadX.OrganizationId = 1;
+            leadX.VendorId = "ORGANIZATION VENDOR ID/KEY";
 
-            var org = await leadX.Organization.GetAsync();
-
+            // Get the current user info
+            var currentUser = await leadX.Users.MeAsync();
+            Console.WriteLine($"Hello, {currentUser.FirstName}!");
         }
     }
 }
